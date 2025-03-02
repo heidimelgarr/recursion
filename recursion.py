@@ -17,7 +17,7 @@ UT EID 1: he3839
 """
 
 
-#TO DO
+
 def group_sum(start, nums, target):
     """
     Given a list of ints, determine if there exists a group of some ints that sum to the
@@ -47,7 +47,7 @@ def group_sum(start, nums, target):
     return discard_current
 
 
-# TODO: Modify this function. You may delete this comment when you are done.
+
 def group_sum_6(start, nums, target):
     """
     Given a list of ints, determine if there exists a group of some ints that sum to the
@@ -82,7 +82,7 @@ def group_sum_6(start, nums, target):
 
 
 
-# TODO: Modify this function. You may delete this comment when you are done.
+
 def group_no_adj(start, nums, target):
     """
     Given a list of ints, determine if there exists a group of some ints that sum to
@@ -113,7 +113,7 @@ def group_no_adj(start, nums, target):
     return discard_current
 
 
-# TODO: Modify this function. You may delete this comment when you are done.
+
 def group_sum_5(start, nums, target):
     """
     Given a list of ints, determine if there exists a group of some ints that sum to
@@ -152,7 +152,7 @@ def group_sum_5(start, nums, target):
 
 
 
-# TODO: Modify this function. You may delete this comment when you are done.
+
 def group_sum_clump(start, nums, target):
     """
     Given a list of ints, determine if there exists a group of some ints that sum to
@@ -164,9 +164,31 @@ def group_sum_clump(start, nums, target):
     pre: start >= 0, len(nums) >= 0, target >= 0, nums will only contain ints
     post: return True if nums has a group of ints that sum to target, False otherwise
     """
+    # Best case
+    if target == 0:
+        return True
+
+    if start >= len(nums):
+        return False
+
+    move_index = start
+    group_of_sum = 0
+
+    for i in range(start, len(nums)):
+        if nums[i] == nums[start]:
+            group_of_sum += nums[i]
+            move_index += 1
+    # Include all
+    target -= group_of_sum
+    if group_sum_clump(move_index, nums, target):
+        return True
+    target += group_of_sum
+
+    # Excluding
+    return group_sum_clump(move_index, nums, target)
 
 
-# TODO: Modify this function
+#TO DO
 def split_array(nums):
     """
     Given a list of ints, determine if the numbers can be split evenly into two groups
@@ -176,9 +198,27 @@ def split_array(nums):
     pre: len(nums) >= 0, nums will only contain ints
     post: return True if nums can be split, False otherwise
     """
+    def helper(start, subset1, subset2):
+        # Base case
+        if start == len(nums):
+            return subset1 == subset2
+        move_index = start + 1
+
+        subset1 += nums[start]
+        if helper(move_index, subset1, subset2):
+            return True
+        subset1 -= nums[start] # Backtrack
+
+        subset2 += nums[start]
+        if helper(move_index, subset1, subset2):
+            return True
+        subset2 -= nums[start] # Backtrack
+        return False
+
+    return helper(0, 0, 0)
 
 
-# TODO: Modify this function. You may delete this comment when you are done.
+#TO DO
 def split_odd_10(nums):
     """
     Given a list of ints, determine if the numbers can be split evenly into two groups
@@ -188,9 +228,27 @@ def split_odd_10(nums):
     pre: len(nums) >= 0, nums will only contain ints
     post: return True if nums can be split, False otherwise
     """
+    def helper(index, subset1, subset2):
+        # Base case
+        if index == len(nums):
+            if subset1 % 10 == 0 and subset2 % 2 == 1:
+                return True
+            if subset2 % 10 == 0 and subset1 % 2 == 1:
+                return True
+            return False
+
+        move_index = index + 1
+        # Recurse by adding to subset
+        if helper(move_index, subset1 + nums[index], subset2):
+            return True
+        if helper(move_index, subset1, subset2 + nums[index]):
+            return True
+        return False
+
+    return helper(0, 0, 0)
 
 
-# TODO: Modify this function. You may delete this comment when you are done.
+#TO DO
 def split_53(nums):
     """
     Given a list of ints, determine if the numbers can be split evenly into two groups
@@ -202,3 +260,25 @@ def split_53(nums):
     pre: len(nums) >= 0, nums will only contain ints
     post: return True if nums can be split, False otherwise
     """
+    def helper(index, subset1, subset2):
+        # Base case
+        if index == len(nums):
+            return subset1 == subset2
+
+        move_index = index + 1
+
+        # Recurse by adding num to group
+        if nums[index] % 5 == 0:
+            if helper(move_index, subset1 + nums[index], subset2):
+                return True
+        elif nums[index] % 3 == 0:
+            if helper(move_index, subset1, subset2 + nums[index]):
+                return True
+        else:
+            # Either subset
+            if helper(move_index, subset1 + nums[index], subset2):
+                return True
+            if helper(move_index, subset1, subset2 + nums[index]):
+                return True
+        return False
+    return helper(0, 0, 0)
