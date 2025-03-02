@@ -65,19 +65,20 @@ def group_sum_6(start, nums, target):
     if start == len(nums):
         return False
 
-    updated_target = target - nums[start]
-    # Move to next index
     move_index = start + 1
 
     # If current num is 6 then add to sum
     if nums[start] == 6:
-        return group_sum_6(move_index, nums, updated_target)
+        return group_sum_6(move_index, nums, target - 6)
+
+    updated_target = target - nums[start]
     add_current = group_sum_6(move_index, nums, updated_target)
+
     if add_current:
         return True
 
     # Discard current num
-    discard_current =  group_sum_6(move_index, nums, updated_target)
+    discard_current =  group_sum_6(move_index, nums, target)
     return discard_current
 
 
@@ -97,14 +98,14 @@ def group_no_adj(start, nums, target):
         return True
 
     # If target not met
-    if start == len(nums):
+    if start >= len(nums):
         return False
 
     # Move to next index
     move_index = start + 1
     # Skip adjacent num
     updated_target = target - nums[start]
-    add_current = group_no_adj(move_index +1, nums, updated_target)
+    add_current = group_no_adj(move_index + 1, nums, updated_target)
 
     if add_current:
         return True
@@ -178,9 +179,11 @@ def group_sum_clump(start, nums, target):
         if nums[i] == nums[start]:
             group_of_sum += nums[i]
             move_index += 1
-    # Include all
-    target -= group_of_sum
-    if group_sum_clump(move_index, nums, target):
+        else:
+            break # stop clump
+
+    # Include
+    if group_sum_clump(move_index, nums, target - group_of_sum) :
         return True
     target += group_of_sum
 
