@@ -173,9 +173,9 @@ def group_sum_clump(start, nums, target):
         return False
 
     move_index = start
-    group_of_sum = 0
+    group_of_sum = nums[start]
 
-    for i in range(start, len(nums)):
+    for i in range(start + 1, len(nums)):
         if nums[i] == nums[start]:
             group_of_sum += nums[i]
             move_index += 1
@@ -183,12 +183,14 @@ def group_sum_clump(start, nums, target):
             break # stop clump
 
     # Include
-    if group_sum_clump(move_index, nums, target - group_of_sum) :
-        return True
-    target += group_of_sum
+    if group_of_sum <= target:
+        include_clump = group_sum_clump(move_index + 1, nums, target - group_of_sum)
+        if include_clump:
+            return True
 
     # Excluding
-    return group_sum_clump(move_index, nums, target)
+    exclude_clump = group_sum_clump(move_index + 1, nums, target)
+    return exclude_clump
 
 
 #TO DO
